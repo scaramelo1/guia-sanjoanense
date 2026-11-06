@@ -23,6 +23,7 @@ export default function Raiz() {
         <Stack.Screen name="categoria/[id]" options={{ title: '' }} />
         <Stack.Screen name="busca" options={{ title: 'Buscar' }} />
         <Stack.Screen name="profissional/[id]" options={{ title: '' }} />
+        <Stack.Screen name="noticia/[id]" options={{ title: 'Notícia' }} />
         <Stack.Screen name="entrar" options={{ title: 'Entrar', presentation: 'modal' }} />
       </Stack>
     </ProvedorConta>

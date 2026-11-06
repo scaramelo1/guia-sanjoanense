@@ -1,5 +1,5 @@
 import { Image } from 'expo-image';
-import * as WebBrowser from 'expo-web-browser';
+import { useRouter } from 'expo-router';
 import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { chamar } from '../../api/cliente';
@@ -15,8 +15,9 @@ interface Noticia {
   quando: string;
 }
 
-// Manchetes de São João coletadas pelo servidor. Tocar abre a matéria no site de origem.
+// Notícias de São João coletadas pelo servidor 6 vezes por dia. Tocar abre a notícia dentro do app.
 export default function TelaNoticias() {
+  const router = useRouter();
   const { dados, erro, carregando, recarregar } = useCarregar(
     () => chamar<{ noticias: Noticia[] }>('noticias.php').then((r) => r.noticias),
     [],
@@ -34,9 +35,9 @@ export default function TelaNoticias() {
       ListEmptyComponent={<Vazio icone="newspaper-variant-outline" texto="Nenhuma notícia por enquanto. Puxe para baixo para atualizar." />}
       renderItem={({ item: n }) => (
         <Pressable
-          accessibilityRole="link"
+          accessibilityRole="button"
           accessibilityLabel={`${n.titulo}. ${n.fonte}, ${n.quando}`}
-          onPress={() => WebBrowser.openBrowserAsync(n.link)}
+          onPress={() => router.push(`/noticia/${n.id}`)}
           style={({ pressed }) => [estilos.cartao, pressed && { backgroundColor: cores.fundoSuave }]}
         >
           {n.imagem && <Image source={n.imagem} style={estilos.imagem} contentFit="cover" transition={150} />}

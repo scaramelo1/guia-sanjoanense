@@ -19,7 +19,7 @@ Legenda: ✅ feito · 🟡 parcial · ⬜ a fazer
 - O profissional aparece se estiver **aprovado** e com a **assinatura em dia** (ou cortesia dada pelo admin).
 - Ordem justa: destaques primeiro, depois quem tem avaliação; dentro de cada grupo a ordem muda uma vez por dia.
 - Selo "Chancelado pela página Sanjoanenses" é dado pelo admin, não vem com o pagamento.
-- Notícias: não usar o feed do Google Notícias (os termos proíbem uso comercial). Novas fontes só com RSS público ou página pública, sempre com link para o original. O admin poderá ocultar manchetes.
+- Notícias: não usar o feed do Google Notícias (os termos proíbem uso comercial). Texto completo só de fonte que permite (Prefeitura: conteúdo institucional público; confirmar por e-mail com a Comunicação da Prefeitura antes de lançar). g1 e jornais: só título, foto, resumo do RSS e link. Novas fontes só com RSS público ou página pública, sempre com link para o original. O admin poderá ocultar manchetes.
 - Os 10 profissionais atuais são **fictícios** (`exemplo = 1`); apagar antes de lançar.
 
 ## Passos
@@ -31,7 +31,8 @@ Legenda: ✅ feito · 🟡 parcial · ⬜ a fazer
    perfil (WhatsApp, ligar, mapa, Instagram, indicar), avaliar, salvos, conta
 5. ✅ Testar o app no PC (`npm install`, `npx tsc --noEmit`, `npx expo lint`, emulador) — feito pelo usuário em 06/11
 5b. 🟡 Contas no app: usuário relatou que não funcionam; o servidor nunca recebeu tentativa de entrar/criar conta → investigar no emulador
-5c. ✅ Aba Notícias (pedido do cliente, 06/11): abas embaixo (Início, Notícias, Salvos, Conta); manchetes coletadas a cada 30 min da página da Prefeitura e do RSS do g1 Campinas (filtrado por "São João da Boa Vista"); só título, foto e link para a matéria original
+5c. ✅ Aba Notícias (pedido do cliente, 06/11): abas embaixo (Início, Notícias, Salvos, Conta); manchetes coletadas a cada 30 min da página da Prefeitura e do RSS do g1 Campinas (filtrado por "São João da Boa Vista"); notícia aberta dentro do app (passo 5d)
+5d. ✅ Notícia montada dentro do app (pedido do cliente, 06/11): Prefeitura com texto completo, intertítulos e galeria; g1 só com resumo do RSS; sempre com quadro "Fonte" + link do original. Coleta por cron 6h, 9h, 12h, 15h, 18h, 21h (`/etc/cron.d/guia-sanjoanense`, log em /var/lib/guia-sanjoanense/noticias.log); reserva: a API coleta se passar de 3 h
 6. ⬜ Administração web (página Sanjoanenses): aprovar/recusar cadastros, editar, selo, cortesia,
    categorias (ordem e quais vão para a tela inicial), ocultar comentários, apagar exemplos
 7. ⬜ Painel do profissional (web): autocadastro, foto, dados, serviços, responder avaliações,

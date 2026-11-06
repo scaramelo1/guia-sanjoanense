@@ -67,6 +67,14 @@ if [ "${1:-}" = "--exemplos" ]; then mysql $BANCO < sql/exemplos.sql; echo "✔ 
 echo "✔ tabelas conferidas"
 mkdir -p $DADOS/fotos && chown -R www-data:www-data $DADOS && chmod 750 $DADOS $DADOS/fotos
 
+# 2b. coleta de notícias 6 vezes por dia (6h, 9h, 12h, 15h, 18h, 21h), como www-data
+cat > /etc/cron.d/$NOME <<CRON
+# Guia Sanjoanense: notícias de São João da Boa Vista para a aba Notícias do app
+0 6,9,12,15,18,21 * * * www-data /usr/bin/php $RAIZ/coletar-noticias.php >> $DADOS/noticias.log 2>&1
+CRON
+chmod 644 /etc/cron.d/$NOME
+echo "✔ coleta de notícias agendada (/etc/cron.d/$NOME)"
+
 # 3. arquivos e publicação em https://fsadesigners.com.br/guia-sanjoanense/
 find "$RAIZ" -type d -exec chmod 755 {} +
 find "$RAIZ" -type f -exec chmod 644 {} +
