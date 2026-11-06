@@ -1,0 +1,22 @@
+{
+  "expo": {
+    "name": "Guia Sanjoanense",
+    "slug": "guia-sanjoanense",
+    "platforms": ["ios", "android"],
+    "version": "1.0.0",
+    "scheme": "guiasanjoanense",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "plugins": [
+      "expo-router",
+      ["expo-splash-screen", { "image": "./assets/splash-icon.png", "imageWidth": 200, "resizeMode": "contain", "backgroundColor": "#FFFFFF" }]
+    ],
+    "ios": { "supportsTablet": true, "bundleIdentifier": "br.com.fsadesigner.guiasanjoanense" },
+    "android": {
+      "package": "br.com.fsadesigner.guiasanjoanense",
+      "adaptiveIcon": { "backgroundColor": "#000000", "foregroundImage": "./assets/android-icon-foreground.png" },
+      "predictiveBackGestureEnabled": false
+    }
+  }
+}
