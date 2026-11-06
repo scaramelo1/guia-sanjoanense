@@ -37,6 +37,12 @@ return [
     'dados_dir' => '$DADOS',
     // Mercado Pago (assinatura recorrente no cartão): 'desligado' | 'sandbox' | 'producao'
     'mp_modo' => 'desligado',
+    // Página de divulgação, termos e privacidade (vazio = não aparece / "em breve")
+    'contato_email' => '',
+    'contato_whatsapp' => '',          // ex.: '19999999999'
+    'instagram' => '',                 // ex.: 'sanjoanenses'
+    'link_play' => '',                 // link da Play Store quando publicar
+    'link_app_store' => '',            // link da App Store quando publicar
     'mp_access_token' => '',
     'mp_webhook_secret' => '',
 ];

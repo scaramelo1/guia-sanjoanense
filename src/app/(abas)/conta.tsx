@@ -2,7 +2,7 @@ import * as WebBrowser from 'expo-web-browser';
 import { useRouter } from 'expo-router';
 import { Alert, ScrollView, Text, View } from 'react-native';
 
-import { URL_PAINEL } from '../../api/cliente';
+import { URL_PAINEL, URL_PRIVACIDADE, URL_TERMOS } from '../../api/cliente';
 import { Botao, Titulo, estilos as ui } from '../../componentes/ui';
 import { useConta } from '../../conta';
 import { cores, fonte } from '../../tema';
@@ -40,6 +40,10 @@ export default function TelaConta() {
       <Titulo>É profissional em São João?</Titulo>
       <Text style={ui.texto}>Cadastre seu serviço e apareça para toda a cidade, com a chancela da página Sanjoanenses.</Text>
       <Botao titulo="Quero aparecer no guia" icone="storefront-outline" onPress={() => WebBrowser.openBrowserAsync(URL_PAINEL)} />
+
+      <Titulo>Sobre o app</Titulo>
+      <Botao titulo="Termos de uso" icone="file-document-outline" tipo="contorno" onPress={() => WebBrowser.openBrowserAsync(URL_TERMOS)} />
+      <Botao titulo="Privacidade" icone="shield-account-outline" tipo="contorno" onPress={() => WebBrowser.openBrowserAsync(URL_PRIVACIDADE)} />
 
       {usuario && (
         <View style={{ marginTop: 32 }}>

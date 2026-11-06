@@ -40,11 +40,13 @@ Legenda: ✅ feito · 🟡 parcial · ⬜ a fazer
 7. ⬜ Painel do profissional (web): autocadastro, foto, dados, serviços, responder avaliações,
    ver quantos tocaram em WhatsApp/ligar
 8. ⬜ Assinatura recorrente no Mercado Pago (planos Básico e Destaque; webhook; atraso tira do ar)
-9. ⬜ Página de divulgação em /guia-sanjoanense/ e termos de uso / privacidade
-10. 🟡 Logo em alta recebida (06/11, `assets/logo-original-alta.jpg`: S branco no preto) → ícone do app, ícone adaptativo do Android, splash e abertura (círculo preto), logo da tela inicial e favicon do site; ⬜ gerar APK de teste (EAS)
+9. ✅ Página de divulgação em /guia-sanjoanense/ (06/11): apresentação, como funciona, categorias, notícias, para profissionais (planos "valor em breve"), perguntas, botões das lojas ("em breve" até ter link). `termos.php` e `privacidade.php` (LGPD; `#excluir-conta` serve de link de exclusão para a Play Store). Links no app: aba Conta e tela de criar conta. Contatos e links das lojas no config (`contato_email`, `contato_whatsapp`, `instagram`, `link_play`, `link_app_store`) — **preencher**
+10. ✅ Logo em alta (06/11, `assets/logo-original-alta.jpg`): ícone do app, ícone adaptativo do Android, splash e abertura (círculo preto), logo da tela inicial e favicon do site. APK de teste fica com o usuário (`npx eas build -p android --profile preview`)
 11. ⬜ Publicar nas lojas (Play Store e App Store)
 
 ## Decisões pendentes com o cliente
+
+- Contatos para o site e os termos: e-mail, WhatsApp e Instagram da página Sanjoanenses (hoje aparece "pelo Instagram da página Sanjoanenses").
 
 - Preço dos planos Básico e Destaque (mensal).
 - Quantos lugares no carrossel de destaque (hoje mostra até 10, ordem muda por dia).

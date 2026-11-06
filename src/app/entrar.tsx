@@ -1,7 +1,9 @@
 import { useRouter } from 'expo-router';
+import * as WebBrowser from 'expo-web-browser';
 import { useState } from 'react';
 import { KeyboardAvoidingView, Platform, ScrollView, Text, TextInput } from 'react-native';
 
+import { URL_PRIVACIDADE, URL_TERMOS } from '../api/cliente';
 import { Botao, estilos as ui } from '../componentes/ui';
 import { useConta } from '../conta';
 import { cores, fonte } from '../tema';
@@ -55,6 +57,20 @@ export default function TelaEntrar() {
         />
         <Text style={ui.rotulo}>Senha{nova ? ' (mínimo 6)' : ''}</Text>
         <TextInput value={senha} onChangeText={setSenha} secureTextEntry autoComplete={nova ? 'new-password' : 'current-password'} style={ui.campo} />
+
+        {nova && (
+          <Text style={{ fontSize: fonte.pequena, color: cores.textoSuave, marginTop: 14, lineHeight: 22 }}>
+            Ao criar a conta, você concorda com os{' '}
+            <Text style={{ color: cores.magenta, textDecorationLine: 'underline' }} onPress={() => WebBrowser.openBrowserAsync(URL_TERMOS)}>
+              Termos de uso
+            </Text>{' '}
+            e a{' '}
+            <Text style={{ color: cores.magenta, textDecorationLine: 'underline' }} onPress={() => WebBrowser.openBrowserAsync(URL_PRIVACIDADE)}>
+              Política de privacidade
+            </Text>
+            .
+          </Text>
+        )}
 
         {erro && <Text style={{ color: cores.erro, fontSize: fonte.normal, marginTop: 14 }}>{erro}</Text>}
 

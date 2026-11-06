@@ -43,3 +43,4 @@ servidor/dados/
 /ios
 /android
 servidor/config.local.php
+servidor/publico/assets/icone-previa.png

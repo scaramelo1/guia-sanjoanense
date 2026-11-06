@@ -1,6 +1,8 @@
 export const URL_API = 'https://fsadesigners.com.br/guia-sanjoanense/api';
 /** Página onde o profissional se cadastra e paga a assinatura. */
 export const URL_PAINEL = 'https://fsadesigners.com.br/guia-sanjoanense/painel/';
+export const URL_TERMOS = 'https://fsadesigners.com.br/guia-sanjoanense/termos.php';
+export const URL_PRIVACIDADE = 'https://fsadesigners.com.br/guia-sanjoanense/privacidade.php';
 
 export interface Categoria {
   id: number;
