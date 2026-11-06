@@ -2,6 +2,10 @@
 // Aba Notícias: coleta automática de notícias sobre São João da Boa Vista, abertas dentro do app.
 // - Prefeitura: notícias institucionais públicas, feitas para divulgação → texto completo, sempre com
 //   "Fonte: Prefeitura de São João da Boa Vista" e link para o original.
+// - Câmara Municipal (RSS 1.0 do site Plone): também institucional e pública → texto completo, com os links da
+//   matéria (galeria de fotos, vídeo da sessão) virando botões.
+// - O Município (RSS do WordPress), jornal da cidade: só título, foto, o começo da matéria (sem o nome/e-mail do autor)
+//   e o botão para ler a matéria completa no site do jornal (aberto dentro do app).
 // - g1 (RSS): o g1 não permite reproduzir a matéria → só título, foto, o resumo que o próprio RSS traz e o botão
 //   "Ler a matéria completa no g1".
 // O feed do Google Notícias NÃO é usado: os termos dele proíbem uso comercial.
@@ -16,8 +20,11 @@ const NOTICIAS_UA = 'Mozilla/5.0 (compatible; GuiaSanjoanense/1.0; +https://fsad
 
 function noticias_fontes(): array {
     return [
-        ['nome' => 'Prefeitura de São João da Boa Vista', 'tipo' => 'prefeitura', 'url' => 'https://www.saojoao.sp.gov.br/noticias', 'completa' => true],
-        ['nome' => 'g1 Campinas e Região', 'tipo' => 'rss', 'url' => 'https://g1.globo.com/rss/g1/sp/campinas-regiao/', 'filtrar' => true, 'completa' => false],
+        ['nome' => 'Prefeitura de São João da Boa Vista', 'tipo' => 'prefeitura', 'url' => 'https://www.saojoao.sp.gov.br/noticias', 'completa' => 'prefeitura'],
+        ['nome' => 'Câmara Municipal de São João da Boa Vista', 'tipo' => 'rss', 'url' => 'https://www.saojoaodaboavista.sp.leg.br/institucional/2018/colecao-de-noticias/RSS',
+         'maiusculas' => true, 'completa' => 'camara'],
+        ['nome' => 'O Município', 'tipo' => 'rss', 'url' => 'https://www.omunicipio.jor.br/wordpress/feed/'],
+        ['nome' => 'g1 Campinas e Região', 'tipo' => 'rss', 'url' => 'https://g1.globo.com/rss/g1/sp/campinas-regiao/', 'filtrar' => true],
     ];
 }
 
@@ -53,21 +60,50 @@ function noticias_ler_prefeitura(string $html, string $base): array {
     return $itens;
 }
 
+const NOTICIAS_SIGLAS = ['loa', 'ldo', 'ppa', 'sapl', 'tv', 'sp', 'sjbv', 'mp', 'ubs', 'sus', 'gcm', 'pm', 'emeb', 'apae', 'cmsjbv', 'iptu', 'issqn', 'cpi', 'unesp', 'ifsp', 'saae'];
+
+// Títulos da Câmara vêm TODOS EM MAIÚSCULAS, difíceis de ler: "Sessão ordinária - 03.11.26 - Resumo das votações e debates"
+function noticias_frase(string $t): string {
+    if ($t !== mb_strtoupper($t)) return $t;
+    $t = mb_strtolower($t);
+    $t = preg_replace_callback('/\b(' . implode('|', NOTICIAS_SIGLAS) . ')\b/u', fn($m) => mb_strtoupper($m[1]), $t);
+    return preg_replace_callback('/(^|[-:.!?]\s+)(\p{Ll})/u', fn($m) => $m[1] . mb_strtoupper($m[2]), $t);
+}
+
+// Começo da matéria para o resumo: pula o parágrafo de autor/e-mail e para perto de 450 letras
+function noticias_comeco(string $html): ?string {
+    $txt = '';
+    preg_match_all('#<p[^>]*>(.*?)</p>#su', $html, $ps);
+    foreach ($ps[1] as $p) {
+        $l = noticias_texto($p);
+        if ($l === '' || str_contains($l, '@') || mb_strlen($l) < 40) continue;
+        $txt .= ($txt ? "\n\n" : '') . $l;
+        if (mb_strlen($txt) >= 300) break;
+    }
+    if ($txt === '') return null;
+    return mb_strlen($txt) > 600 ? rtrim(mb_substr($txt, 0, mb_strrpos(mb_substr($txt, 0, 600), ' '))) . '…' : $txt;
+}
+
 function noticias_ler_rss(string $xml, bool $filtrar): array {
     $prev = libxml_use_internal_errors(true);
     $rss = simplexml_load_string($xml, 'SimpleXMLElement', LIBXML_NONET | LIBXML_NOCDATA);
     libxml_use_internal_errors($prev);
-    if (!$rss || !isset($rss->channel->item)) return [];
+    if (!$rss) return [];
+    // RSS 2.0: itens dentro de <channel>; RSS 1.0 (Câmara): itens soltos na raiz
+    $lista = isset($rss->channel->item) ? $rss->channel->item : (isset($rss->item) ? $rss->item : null);
+    if (!$lista) return [];
     $itens = [];
-    foreach ($rss->channel->item as $it) {
+    foreach ($lista as $it) {
         $titulo = noticias_texto((string)$it->title);
-        $desc = noticias_texto((string)$it->description);
+        $conteudo = (string)$it->children('http://purl.org/rss/1.0/modules/content/')->encoded;
+        $desc = ($conteudo !== '' ? noticias_comeco($conteudo) : null) ?? noticias_texto((string)$it->description);
         if ($filtrar && !preg_match(NOTICIAS_TERMO, $titulo . ' ' . $desc)) continue;
         $img = null;
         $media = $it->children('http://search.yahoo.com/mrss/');
         if (isset($media->content)) $img = (string)$media->content->attributes()->url;
-        if (!$img && preg_match('/<img[^>]+src="(https:[^"]+)"/', (string)$it->description, $m)) $img = $m[1];
-        $t = strtotime((string)$it->pubDate);
+        if (!$img && preg_match('/<img[^>]+src="(https:[^"]+)"/', $conteudo . (string)$it->description, $m))
+            $img = preg_replace('/-\d+x\d+(\.(jpe?g|png|webp))$/i', '$1', $m[1]);   // WordPress: miniatura 150x150 → foto inteira
+        $t = strtotime((string)($it->pubDate ?: $it->children('http://purl.org/dc/elements/1.1/')->date));
         $itens[] = ['titulo' => $titulo, 'link' => (string)$it->link, 'imagem' => $img ?: null, 'resumo' => $desc !== '' ? mb_substr($desc, 0, 600) : null,
             'publicada_em' => date('Y-m-d H:i:s', $t ?: time())];
     }
@@ -119,18 +155,42 @@ function noticias_ler_materia_prefeitura(string $html): array {
     return $blocos;
 }
 
+// Página de uma notícia da Câmara (site Plone): texto em #parent-fieldname-text; foto em .newsImageContainer.
+// Parágrafo só com um link (galeria, vídeo da sessão) vira botão; parágrafo todo em negrito vira intertítulo.
+function noticias_ler_materia_camara(string $html, ?string &$capa = null): array {
+    if (preg_match('#<div class="newsImageContainer">.*?<img src="(https://[^"]+)/image_mini"#s', $html, $im)) $capa = $im[1] . '/image_preview';
+    $ini = strpos($html, 'id="parent-fieldname-text"');
+    if ($ini === false) return [];
+    $fim = strpos($html, 'id="viewlet-below-content-body"', $ini) ?: $ini + 60000;
+    preg_match_all('#<(p|li|h[1-6])\b[^>]*>(.*?)</\1>#su', substr($html, $ini, $fim - $ini), $els, PREG_SET_ORDER);
+    $blocos = [];
+    foreach ($els as [, $tag, $dentro]) {
+        $l = noticias_texto($dentro);
+        if ($l === '') continue;
+        if (preg_match('#^\s*(?:<(?:b|strong)>\s*)?<a [^>]*href="(https://[^"]+)"[^>]*>(.*?)</a>\s*(?:</(?:b|strong)>\s*)?$#su', $dentro, $a)) {
+            $blocos[] = ['t' => 'link', 'x' => noticias_texto($a[2]), 'url' => html_entity_decode($a[1])];
+            continue;
+        }
+        $negrito = preg_match('#^\s*<(b|strong)>[^<]*</\1>\s*$#u', $dentro) || $tag[0] === 'h';
+        if ($negrito && mb_strlen($l) <= 80) { $blocos[] = ['t' => 'sub', 'x' => noticias_frase($l)]; continue; }
+        $blocos[] = ['t' => 'p', 'x' => ($tag === 'li' ? '• ' : '') . $l];
+    }
+    return $blocos;
+}
+
 // Baixa o texto das notícias novas (até 15 por coleta; desiste depois de 3 falhas)
-function noticias_buscar_textos(string $fonte): void {
+function noticias_buscar_textos(string $fonte, string $leitor): void {
     foreach (linhas('SELECT id, link FROM noticias WHERE fonte = ? AND corpo IS NULL AND tentativas < 3 ORDER BY publicada_em DESC LIMIT ' . NOTICIAS_TEXTOS_POR_COLETA, [$fonte]) as $n) {
         q('UPDATE noticias SET tentativas = tentativas + 1 WHERE id = ?', [$n['id']]);
         $html = noticias_baixar($n['link']);
-        $blocos = $html ? noticias_ler_materia_prefeitura($html) : [];
+        $capa = null;
+        $blocos = !$html ? [] : ($leitor === 'camara' ? noticias_ler_materia_camara($html, $capa) : noticias_ler_materia_prefeitura($html));
         if (!array_filter($blocos, fn($b) => $b['t'] === 'p')) continue;
         $resumo = '';
         foreach ($blocos as $b) if ($b['t'] === 'p') { $resumo = mb_substr($b['x'], 0, 300); break; }
-        q('UPDATE noticias SET corpo = ?, completa = 1, resumo = COALESCE(resumo, ?) WHERE id = ?',
-            [json_encode($blocos, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES), $resumo, $n['id']]);
-        usleep(300000);   // gentileza com o site da Prefeitura
+        q('UPDATE noticias SET corpo = ?, completa = 1, resumo = COALESCE(resumo, ?), imagem = COALESCE(imagem, ?) WHERE id = ?',
+            [json_encode($blocos, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES), $resumo, $capa, $n['id']]);
+        usleep(300000);   // gentileza com o site de origem
     }
 }
 
@@ -148,8 +208,10 @@ function noticias_atualizar(bool $forcar = false): void {
             $itens = $f['tipo'] === 'prefeitura'
                 ? noticias_ler_prefeitura($conteudo, 'https://www.saojoao.sp.gov.br')
                 : noticias_ler_rss($conteudo, !empty($f['filtrar']));
+            if (!empty($f['maiusculas'])) foreach ($itens as &$it) $it['titulo'] = noticias_frase($it['titulo']);
+            unset($it);
             noticias_salvar($f['nome'], $itens);
-            if (!empty($f['completa'])) noticias_buscar_textos($f['nome']);
+            if (!empty($f['completa'])) noticias_buscar_textos($f['nome'], $f['completa']);
         } catch (Throwable $e) {
             error_log("Guia Sanjoanense notícias: {$f['nome']}: " . $e->getMessage());
         }
@@ -170,12 +232,12 @@ function noticia_completa(int $id): ?array {
     $n = $id ? linha('SELECT * FROM noticias WHERE id = ? AND oculta = 0', [$id]) : null;
     if (!$n) return null;
     $blocos = $n['corpo'] ? (json_decode($n['corpo'], true) ?: []) : [];
-    if (!$blocos && $n['resumo']) $blocos = [['t' => 'p', 'x' => $n['resumo']]];
+    if (!$blocos && $n['resumo']) $blocos = array_map(fn($x) => ['t' => 'p', 'x' => $x], preg_split("/\n\n+/", $n['resumo']));
     // a capa já aparece no topo: não repetir a mesma foto no corpo
     $blocos = array_values(array_filter($blocos, fn($b) => $b['t'] !== 'img' || !$n['imagem'] || substr(basename($b['src']), 2) !== substr(basename($n['imagem']), 2)));
     return [
         // capa: na lista a Prefeitura usa a foto pequena (p_); aqui a média (m_)
-        'id' => (int)$n['id'], 'titulo' => $n['titulo'], 'imagem' => $n['imagem'] ? preg_replace('#/p_(\d)#', '/m_$1', $n['imagem']) : null, 'fonte' => $n['fonte'], 'link' => $n['link'],
+        'id' => (int)$n['id'], 'titulo' => $n['titulo'], 'imagem' => $n['imagem'] ? preg_replace(['#/p_(\d)#', '#/image_preview$#'], ['/m_$1', '/image_large'], $n['imagem']) : null, 'fonte' => $n['fonte'], 'link' => $n['link'],
         'data' => date('d/m/Y', strtotime($n['publicada_em'])) . ' às ' . date('H\\hi', strtotime($n['publicada_em'])), 'completa' => (bool)$n['completa'], 'blocos' => $blocos,
     ];
 }

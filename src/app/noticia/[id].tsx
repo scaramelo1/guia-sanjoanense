@@ -9,7 +9,23 @@ import { chamar } from '../../api/cliente';
 import { Botao, Carregando, Falha, useCarregar } from '../../componentes/ui';
 import { cores, fonte } from '../../tema';
 
-type Bloco = { t: 'p'; x: string } | { t: 'sub'; x: string } | { t: 'img'; src: string };
+type Bloco = { t: 'p'; x: string } | { t: 'sub'; x: string } | { t: 'img'; src: string } | { t: 'link'; x: string; url: string };
+
+/**
+ * Abre um site por cima do app (navegador embutido): a pessoa lê lá e toca em "X" ou "Voltar" para voltar ao app.
+ * Assim a matéria abre no site do jornal (que recebe a visita) sem tirar a pessoa do app.
+ */
+function abrirDentroDoApp(url: string) {
+  return WebBrowser.openBrowserAsync(url, {
+    toolbarColor: cores.fundo,
+    controlsColor: cores.magenta,
+    secondaryToolbarColor: cores.fundo,
+    showTitle: true,
+    enableBarCollapsing: true,
+    dismissButtonStyle: 'close',
+    presentationStyle: WebBrowser.WebBrowserPresentationStyle.FULL_SCREEN,
+  });
+}
 
 interface Noticia {
   id: number;
@@ -34,7 +50,7 @@ export default function TelaNoticia() {
   if (erro && !n) return <Falha mensagem={erro} tentar={recarregar} />;
   if (!n) return null;
 
-  const abrirOriginal = () => WebBrowser.openBrowserAsync(n.link);
+  const abrirOriginal = () => abrirDentroDoApp(n.link);
 
   return (
     <>
@@ -51,7 +67,15 @@ export default function TelaNoticia() {
           </View>
 
           {n.blocos.map((b, i) =>
-            b.t === 'img' ? (
+            b.t === 'link' ? (
+              <Botao
+                key={i}
+                titulo={b.x}
+                icone={/youtube|youtu\.be/.test(b.url) ? 'youtube' : /galeria|foto/i.test(b.x) ? 'image-multiple-outline' : 'open-in-new'}
+                tipo="contorno"
+                onPress={() => abrirDentroDoApp(b.url)}
+              />
+            ) : b.t === 'img' ? (
               <ImagemAuto key={i} src={b.src} arredondada />
             ) : b.t === 'sub' ? (
               <Text key={i} style={estilos.sub}>
@@ -65,9 +89,13 @@ export default function TelaNoticia() {
           )}
 
           {!n.completa && (
-            <Text style={[estilos.paragrafo, { color: cores.textoSuave }]}>
-              {n.blocos.length ? 'Este é um resumo. ' : ''}A matéria completa está no site {n.fonte}.
-            </Text>
+            <View style={estilos.continuar}>
+              <Text style={[estilos.paragrafo, { color: cores.textoSuave }]}>
+                {n.blocos.length ? 'Este é o começo da matéria. ' : ''}Para ler tudo, toque no botão abaixo: a matéria abre aqui mesmo, no site {n.fonte}.
+                Para voltar, toque no X lá em cima.
+              </Text>
+              <Botao titulo="Ler a matéria completa" icone="book-open-page-variant-outline" onPress={abrirOriginal} estilo={{ marginTop: 12 }} />
+            </View>
           )}
 
           <View style={estilos.referencia}>
@@ -76,13 +104,7 @@ export default function TelaNoticia() {
             <Text style={estilos.refLink} onPress={abrirOriginal} accessibilityRole="link">
               {n.link}
             </Text>
-            <Botao
-              titulo={n.completa ? 'Ver no site original' : 'Ler a matéria completa'}
-              icone="open-in-new"
-              tipo="contorno"
-              onPress={abrirOriginal}
-              estilo={{ marginTop: 12 }}
-            />
+            {n.completa && <Botao titulo="Ver no site original" icone="open-in-new" tipo="contorno" onPress={abrirOriginal} estilo={{ marginTop: 12 }} />}
           </View>
           <Botao
             titulo="Compartilhar"
@@ -119,6 +141,7 @@ const estilos = StyleSheet.create({
   meta: { fontSize: fonte.pequena, color: cores.textoSuave, flex: 1 },
   sub: { fontSize: fonte.grande - 2, fontWeight: '800', color: cores.texto, marginTop: 8 },
   paragrafo: { fontSize: fonte.media, color: cores.texto, lineHeight: 31 },
+  continuar: { borderTopWidth: 1, borderTopColor: cores.borda, paddingTop: 14 },
   referencia: { backgroundColor: cores.fundoSuave, borderRadius: 16, padding: 16, marginTop: 12, borderLeftWidth: 4, borderLeftColor: cores.magenta },
   refTitulo: { fontSize: fonte.pequena, fontWeight: '800', color: cores.textoSuave, textTransform: 'uppercase', letterSpacing: 1 },
   refTexto: { fontSize: fonte.normal, fontWeight: '700', color: cores.texto, marginTop: 4 },
