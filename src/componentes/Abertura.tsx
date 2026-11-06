@@ -18,10 +18,11 @@ const DURACAO_PARADA = 1400; // tempo com o nome na tela antes de sumir
  */
 export function Abertura({ children }: { children: React.ReactNode }) {
   const [visivel, setVisivel] = useState(true);
-  const logo = useRef(new Animated.Value(0)).current; // 0 = igual à splash nativa, 1 = posição final
-  const texto = useRef(new Animated.Value(0)).current;
-  const faixa = useRef(new Animated.Value(0)).current;
-  const saida = useRef(new Animated.Value(1)).current;
+  // Valores da animação criados uma vez só (useState, e não useRef(...).current, que o lint proíbe no render)
+  const [logo] = useState(() => new Animated.Value(0)); // 0 = igual à splash nativa, 1 = posição final
+  const [texto] = useState(() => new Animated.Value(0));
+  const [faixa] = useState(() => new Animated.Value(0));
+  const [saida] = useState(() => new Animated.Value(1));
   const iniciou = useRef(false);
 
   function sair() {
