@@ -41,7 +41,7 @@ Legenda: ✅ feito · 🟡 parcial · ⬜ a fazer
    ver quantos tocaram em WhatsApp/ligar
 8. ⬜ Assinatura recorrente no Mercado Pago (planos Básico e Destaque; webhook; atraso tira do ar)
 9. ⬜ Página de divulgação em /guia-sanjoanense/ e termos de uso / privacidade
-10. ⬜ Ícone original em alta (1024 px) com o cliente; gerar APK de teste (EAS)
+10. 🟡 ✅ Logo em alta recebida (06/11, `assets/logo-original-alta.jpg`: S branco no preto) → ícone do app, ícone adaptativo do Android, splash e abertura (círculo preto), logo da tela inicial e favicon do site; ⬜ gerar APK de teste (EAS)
 11. ⬜ Publicar nas lojas (Play Store e App Store)
 
 ## Decisões pendentes com o cliente
@@ -49,4 +49,3 @@ Legenda: ✅ feito · 🟡 parcial · ⬜ a fazer
 - Preço dos planos Básico e Destaque (mensal).
 - Quantos lugares no carrossel de destaque (hoje mostra até 10, ordem muda por dia).
 - Outras fontes de notícias: Fala São João e Poços Já (sem pedir, só título/resumo/link); propor parceria ao O Município, Fala São João e Parabrisa (Parabrisa sem RSS; só com autorização).
-- Logo original em alta resolução (o recebido tem 191 px).
