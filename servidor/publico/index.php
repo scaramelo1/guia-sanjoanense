@@ -95,6 +95,12 @@ pagina_inicio('Guia Sanjoanense: os profissionais de São João da Boa Vista',
       <details><summary>Preciso criar conta?</summary><p>Não. A conta (só nome, e-mail e senha) serve apenas para quem quer avaliar, comentar ou salvar profissionais. Você pode excluir sua conta a qualquer momento pelo próprio app.</p></details>
       <details><summary>O Guia faz o serviço ou cobra pelo serviço?</summary><p>Não. O Guia só mostra os profissionais. O combinado (preço, prazo, garantia) é feito direto entre você e o profissional.</p></details>
       <details><summary>Como os profissionais são escolhidos?</summary><p>Cada cadastro é conferido pela página Sanjoanenses antes de aparecer. A ordem da lista muda todos os dias, para ser justa com todos, e quem assina o plano Destaque aparece no carrossel do topo.</p></details>
+      <details id="instalar-apk"><summary>Como instalar o APK no Android?</summary>
+        <p>1. Toque em <strong>Baixar APK</strong> e espere terminar o download.<br>
+        2. Toque na notificação do download (ou abra o arquivo <strong>guia-sanjoanense.apk</strong> na pasta Downloads).<br>
+        3. Se o celular avisar que é de "fonte desconhecida", toque em <strong>Configurações</strong>, ligue <strong>Permitir desta fonte</strong> e volte.<br>
+        4. Toque em <strong>Instalar</strong> e depois em <strong>Abrir</strong>.<br>
+        Para atualizar, é só baixar de novo e instalar por cima: suas informações continuam lá. No iPhone, o app virá pela App Store.</p></details>
       <details><summary>Tive um problema com um profissional. O que faço?</summary><p>Conte como foi na avaliação (com respeito) e fale com a gente: <?= contatos_html() ?>. Comentários ofensivos ou falsos são retirados.</p></details>
     </div>
   </section>

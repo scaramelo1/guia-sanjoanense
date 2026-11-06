@@ -78,6 +78,20 @@ h3 { font-size: 1.3rem; font-weight: 800; }
 .claro .loja.breve { background: transparent; color: var(--texto); border-color: #b9b9c0; }
 .claro .loja.breve small { color: var(--texto2); }
 
+/* APK */
+.apk { flex-basis: 100%; display: flex; flex-wrap: wrap; align-items: center; gap: 6px 18px; margin-bottom: 4px; }
+.apk-botao { background: var(--ciano) !important; color: #000 !important; min-height: 68px; font-size: 1.3rem; }
+.apk-botao small { color: #053a45 !important; }
+.apk-botao.breve { background: transparent !important; color: inherit !important; }
+.apk-botao.breve small { color: inherit !important; opacity: .7; }
+.apk-info { display: flex; flex-wrap: wrap; gap: 4px 14px; margin: 0; font-size: .95rem; color: #c9c9d0; }
+.apk-info span + span::before { content: "·"; margin-right: 14px; color: #6a6a72; }
+.apk-ajuda { flex-basis: 100%; margin: 0; font-size: .95rem; }
+.apk-ajuda a { color: var(--ciano); }
+.claro .apk-info { color: var(--texto2); }
+.claro .apk-ajuda a { color: #00809a; }
+@media (max-width: 820px) { .hero .apk, .claro .apk { justify-content: center; } .apk-info, .apk-ajuda { justify-content: center; text-align: center; } }
+
 /* seções */
 section { padding: 72px 0; }
 section.cinza { background: var(--suave); }

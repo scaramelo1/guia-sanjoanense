@@ -41,6 +41,7 @@ Legenda: ✅ feito · 🟡 parcial · ⬜ a fazer
    ver quantos tocaram em WhatsApp/ligar
 8. ⬜ Assinatura recorrente no Mercado Pago (planos Básico e Destaque; webhook; atraso tira do ar)
 9. ✅ Página de divulgação em /guia-sanjoanense/ (06/11): apresentação, como funciona, categorias, notícias, para profissionais (planos "valor em breve"), perguntas, botões das lojas ("em breve" até ter link). `termos.php` e `privacidade.php` (LGPD; `#excluir-conta` serve de link de exclusão para a Play Store). Links no app: aba Conta e tela de criar conta. Contatos e links das lojas no config (`contato_email`, `contato_whatsapp`, `instagram`, `link_play`, `link_app_store`) — **preencher**
+9b. ✅ Botão "Baixar APK" no site (06/11): mostra total de downloads, data da última atualização, versão e tamanho; `baixar-apk.php` conta e entrega (aceita retomar download); APK guardado fora da pasta pública em /var/lib/guia-sanjoanense/apk/. Publicar: `bash servidor/publicar-apk.sh <link do EAS ou arquivo.apk>` (confere se é APK, troca de uma vez, nunca zera o contador). Ajuda "Como instalar o APK" nas perguntas
 10. ✅ Logo em alta (06/11, `assets/logo-original-alta.jpg`): ícone do app, ícone adaptativo do Android, splash e abertura (círculo preto), logo da tela inicial e favicon do site. APK de teste fica com o usuário (`npx eas build -p android --profile preview`)
 11. ⬜ Publicar nas lojas (Play Store e App Store)
 
