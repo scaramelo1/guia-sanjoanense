@@ -4,10 +4,10 @@ import { useRouter } from 'expo-router';
 import { Pressable, RefreshControl, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { chamar, type Categoria, type ProfissionalResumo } from '../api/cliente';
-import { Vitrine } from '../componentes/Vitrine';
-import { Carregando, Falha, Icone, Titulo, useCarregar } from '../componentes/ui';
-import { cores, fonte, TOQUE } from '../tema';
+import { chamar, type Categoria, type ProfissionalResumo } from '../../api/cliente';
+import { Vitrine } from '../../componentes/Vitrine';
+import { Carregando, Falha, Icone, Titulo, useCarregar } from '../../componentes/ui';
+import { cores, fonte, TOQUE } from '../../tema';
 
 interface Inicio {
   destaques: ProfissionalResumo[];
@@ -22,13 +22,11 @@ export default function TelaInicio() {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: cores.fundo }} edges={['top']}>
       <View style={estilos.topo}>
-        <Image source={require('../../assets/logo.png')} style={{ width: 48, height: 48 }} />
+        <Image source={require('../../../assets/logo.png')} style={{ width: 48, height: 48 }} />
         <View style={{ flex: 1 }}>
           <Text style={estilos.marca}>Guia Sanjoanense</Text>
           <Text style={estilos.lema}>Profissionais de São João</Text>
         </View>
-        <BotaoTopo icone="heart-outline" rotulo="Salvos" onPress={() => router.push('/salvos')} />
-        <BotaoTopo icone="account-circle-outline" rotulo="Conta" onPress={() => router.push('/conta')} />
       </View>
 
       <ScrollView
@@ -93,20 +91,10 @@ export default function TelaInicio() {
   );
 }
 
-function BotaoTopo({ icone, rotulo, onPress }: { icone: 'heart-outline' | 'account-circle-outline'; rotulo: string; onPress: () => void }) {
-  return (
-    <Pressable accessibilityRole="button" accessibilityLabel={rotulo} onPress={onPress} style={estilos.botaoTopo}>
-      <MaterialCommunityIcons name={icone} size={28} color={cores.texto} />
-      <Text style={{ fontSize: 12, color: cores.texto }}>{rotulo}</Text>
-    </Pressable>
-  );
-}
-
 const estilos = StyleSheet.create({
   topo: { flexDirection: 'row', alignItems: 'center', gap: 10, paddingHorizontal: 16, paddingVertical: 8 },
   marca: { fontSize: fonte.media, fontWeight: '800', color: cores.texto },
   lema: { fontSize: 14, color: cores.textoSuave },
-  botaoTopo: { minWidth: TOQUE, minHeight: TOQUE, alignItems: 'center', justifyContent: 'center' },
   busca: {
     flexDirection: 'row',
     alignItems: 'center',

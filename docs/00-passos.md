@@ -19,6 +19,7 @@ Legenda: ✅ feito · 🟡 parcial · ⬜ a fazer
 - O profissional aparece se estiver **aprovado** e com a **assinatura em dia** (ou cortesia dada pelo admin).
 - Ordem justa: destaques primeiro, depois quem tem avaliação; dentro de cada grupo a ordem muda uma vez por dia.
 - Selo "Chancelado pela página Sanjoanenses" é dado pelo admin, não vem com o pagamento.
+- Notícias: não usar o feed do Google Notícias (os termos proíbem uso comercial). Novas fontes só com RSS público ou página pública, sempre com link para o original. O admin poderá ocultar manchetes.
 - Os 10 profissionais atuais são **fictícios** (`exemplo = 1`); apagar antes de lançar.
 
 ## Passos
@@ -28,7 +29,9 @@ Legenda: ✅ feito · 🟡 parcial · ⬜ a fazer
 3. ✅ Contas do app: criar, entrar, sair, excluir; avaliações com estrelas e comentário; salvos
 4. ✅ App: tela inicial (busca, carrossel, botões de categoria), todas as categorias, lista, busca,
    perfil (WhatsApp, ligar, mapa, Instagram, indicar), avaliar, salvos, conta
-5. ⬜ Testar o app no PC (`npm install`, `npx tsc --noEmit`, `npx expo lint`, emulador)
+5. ✅ Testar o app no PC (`npm install`, `npx tsc --noEmit`, `npx expo lint`, emulador) — feito pelo usuário em 06/11
+5b. 🟡 Contas no app: usuário relatou que não funcionam; o servidor nunca recebeu tentativa de entrar/criar conta → investigar no emulador
+5c. ✅ Aba Notícias (pedido do cliente, 06/11): abas embaixo (Início, Notícias, Salvos, Conta); manchetes coletadas a cada 30 min da página da Prefeitura e do RSS do g1 Campinas (filtrado por "São João da Boa Vista"); só título, foto e link para a matéria original
 6. ⬜ Administração web (página Sanjoanenses): aprovar/recusar cadastros, editar, selo, cortesia,
    categorias (ordem e quais vão para a tela inicial), ocultar comentários, apagar exemplos
 7. ⬜ Painel do profissional (web): autocadastro, foto, dados, serviços, responder avaliações,
@@ -42,4 +45,5 @@ Legenda: ✅ feito · 🟡 parcial · ⬜ a fazer
 
 - Preço dos planos Básico e Destaque (mensal).
 - Quantos lugares no carrossel de destaque (hoje mostra até 10, ordem muda por dia).
+- Outras fontes de notícias da cidade (jornais locais com RSS ou parceria; o Jornal do Parabrisa bloqueia robôs).
 - Logo original em alta resolução (o recebido tem 191 px).

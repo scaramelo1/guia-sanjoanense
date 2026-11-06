@@ -18,13 +18,11 @@ export default function Raiz() {
           contentStyle: { backgroundColor: cores.fundo },
         }}
       >
-        <Stack.Screen name="index" options={{ headerShown: false }} />
+        <Stack.Screen name="(abas)" options={{ headerShown: false }} />
         <Stack.Screen name="categorias" options={{ title: 'Todas as categorias' }} />
         <Stack.Screen name="categoria/[id]" options={{ title: '' }} />
         <Stack.Screen name="busca" options={{ title: 'Buscar' }} />
         <Stack.Screen name="profissional/[id]" options={{ title: '' }} />
-        <Stack.Screen name="salvos" options={{ title: 'Meus salvos' }} />
-        <Stack.Screen name="conta" options={{ title: 'Minha conta' }} />
         <Stack.Screen name="entrar" options={{ title: 'Entrar', presentation: 'modal' }} />
       </Stack>
     </ProvedorConta>

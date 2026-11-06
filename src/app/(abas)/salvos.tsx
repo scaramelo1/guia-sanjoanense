@@ -2,9 +2,9 @@ import { useFocusEffect, useRouter } from 'expo-router';
 import { useCallback } from 'react';
 import { FlatList, View } from 'react-native';
 
-import { chamar, type ProfissionalResumo } from '../api/cliente';
-import { Botao, CartaoProfissional, Carregando, Falha, Vazio, useCarregar } from '../componentes/ui';
-import { useConta } from '../conta';
+import { chamar, type ProfissionalResumo } from '../../api/cliente';
+import { Botao, CartaoProfissional, Carregando, Falha, Vazio, useCarregar } from '../../componentes/ui';
+import { useConta } from '../../conta';
 
 export default function TelaSalvos() {
   const { usuario } = useConta();

@@ -2,10 +2,10 @@ import * as WebBrowser from 'expo-web-browser';
 import { useRouter } from 'expo-router';
 import { Alert, ScrollView, Text, View } from 'react-native';
 
-import { URL_PAINEL } from '../api/cliente';
-import { Botao, Titulo, estilos as ui } from '../componentes/ui';
-import { useConta } from '../conta';
-import { cores, fonte } from '../tema';
+import { URL_PAINEL } from '../../api/cliente';
+import { Botao, Titulo, estilos as ui } from '../../componentes/ui';
+import { useConta } from '../../conta';
+import { cores, fonte } from '../../tema';
 
 export default function TelaConta() {
   const router = useRouter();
