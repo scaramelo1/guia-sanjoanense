@@ -11,7 +11,7 @@ interface Resposta {
 
 export default function TelaCategoria() {
   const { id } = useLocalSearchParams<{ id: string }>();
-  const { dados, erro, carregando, recarregar } = useCarregar(() => chamar<Resposta>(`categoria.php?id=${id}`), [id]);
+  const { dados, erro, carregando, recarregar } = useCarregar(() => chamar<Resposta>(`categoria.php?id=${id}`), `categoria-${id}`);
   return (
     <>
       <Stack.Screen options={{ title: dados?.categoria.nome ?? '' }} />

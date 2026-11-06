@@ -20,7 +20,7 @@ export default function TelaNoticias() {
   const router = useRouter();
   const { dados, erro, carregando, recarregar } = useCarregar(
     () => chamar<{ noticias: Noticia[] }>('noticias.php').then((r) => r.noticias),
-    [],
+    'noticias',
   );
   if (carregando && !dados) return <Carregando />;
   if (erro && !dados) return <Falha mensagem={erro} tentar={recarregar} />;

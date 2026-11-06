@@ -28,7 +28,7 @@ export default function TelaNoticia() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const { dados: n, erro, carregando, recarregar } = useCarregar(
     () => chamar<{ noticia: Noticia }>(`noticia.php?id=${id}`).then((r) => r.noticia),
-    [id],
+    `noticia-${id}`,
   );
   if (carregando && !n) return <Carregando />;
   if (erro && !n) return <Falha mensagem={erro} tentar={recarregar} />;

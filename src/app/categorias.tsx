@@ -10,7 +10,7 @@ export default function TelaCategorias() {
   const router = useRouter();
   const { dados, erro, carregando, recarregar } = useCarregar(
     () => chamar<{ categorias: Categoria[] }>('inicio.php').then((r) => r.categorias),
-    [],
+    'categorias',
   );
   if (carregando && !dados) return <Carregando />;
   if (erro && !dados) return <Falha mensagem={erro} tentar={recarregar} />;

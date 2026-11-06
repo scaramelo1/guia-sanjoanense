@@ -9,19 +9,13 @@ export default function TelaBusca() {
   const [termo, setTermo] = useState('');
   const [itens, setItens] = useState<ProfissionalResumo[] | null>(null);
   const [erro, setErro] = useState<string | null>(null);
-  const [buscando, setBuscando] = useState(false);
 
   // busca enquanto digita, esperando a pessoa parar por meio segundo
   useEffect(() => {
     const t = termo.trim();
-    if (t.length < 2) {
-      setItens(null);
-      setErro(null);
-      return;
-    }
+    if (t.length < 2) return;
     let cancelado = false;
     const espera = setTimeout(async () => {
-      setBuscando(true);
       try {
         const r = await chamar<{ profissionais: ProfissionalResumo[] }>(`busca.php?q=${encodeURIComponent(t)}`);
         if (!cancelado) {
@@ -30,8 +24,6 @@ export default function TelaBusca() {
         }
       } catch (e) {
         if (!cancelado) setErro(e instanceof Error ? e.message : 'Não foi possível buscar.');
-      } finally {
-        if (!cancelado) setBuscando(false);
       }
     }, 500);
     return () => {
@@ -39,6 +31,8 @@ export default function TelaBusca() {
       clearTimeout(espera);
     };
   }, [termo]);
+
+  const curto = termo.trim().length < 2;
 
   return (
     <View style={{ flex: 1 }}>
@@ -54,12 +48,12 @@ export default function TelaBusca() {
           accessibilityLabel="Digite o que você precisa"
         />
       </View>
-      {buscando && !itens ? (
-        <Carregando />
+      {curto ? (
+        <Vazio icone="magnify" texto="Digite o serviço, o nome do profissional ou o bairro." />
       ) : erro ? (
         <Vazio icone="wifi-off" texto={erro} />
       ) : itens === null ? (
-        <Vazio icone="magnify" texto="Digite o serviço, o nome do profissional ou o bairro." />
+        <Carregando />
       ) : (
         <FlatList
           data={itens}

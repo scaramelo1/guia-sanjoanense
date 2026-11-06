@@ -16,7 +16,7 @@ interface Inicio {
 
 export default function TelaInicio() {
   const router = useRouter();
-  const { dados, erro, carregando, recarregar } = useCarregar(() => chamar<Inicio>('inicio.php'), []);
+  const { dados, erro, carregando, recarregar } = useCarregar(() => chamar<Inicio>('inicio.php'), 'inicio');
   const principais = dados?.categorias.filter((c) => c.naInicial) ?? [];
 
   return (

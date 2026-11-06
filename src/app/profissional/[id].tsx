@@ -23,7 +23,7 @@ export default function TelaProfissional() {
   const { usuario } = useConta();
   const { dados: p, setDados, erro, carregando, recarregar } = useCarregar(
     () => chamar<{ profissional: Profissional }>(`profissional.php?id=${id}`).then((r) => r.profissional),
-    [id, usuario?.id],
+    `${id}-${usuario?.id ?? 0}`,
   );
 
   if (carregando && !p) return <Carregando />;

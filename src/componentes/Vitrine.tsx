@@ -1,5 +1,5 @@
 import { useRouter } from 'expo-router';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type ComponentRef } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 
 import type { ProfissionalResumo } from '../api/cliente';
@@ -13,7 +13,7 @@ export function Vitrine({ itens }: { itens: ProfissionalResumo[] }) {
   const router = useRouter();
   const { width } = useWindowDimensions();
   const largura = width - 32;
-  const rolagem = useRef<ScrollView>(null);
+  const rolagem = useRef<ComponentRef<typeof ScrollView>>(null);
   const [atual, setAtual] = useState(0);
   const [pausado, setPausado] = useState(false);
 

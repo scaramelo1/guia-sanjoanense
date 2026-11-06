@@ -1,7 +1,7 @@
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
-import { useCallback, useEffect, useState, type ComponentProps, type ReactNode } from 'react';
+import { useCallback, useEffect, useRef, useState, type ComponentProps, type ReactNode } from 'react';
 import { ActivityIndicator, Pressable, StyleSheet, Text, View, type StyleProp, type ViewStyle } from 'react-native';
 
 import type { ProfissionalResumo } from '../api/cliente';
@@ -15,29 +15,47 @@ export function Icone({ nome, tamanho = 28, cor = cores.texto }: { nome: string;
   return <MaterialCommunityIcons name={valido} size={tamanho} color={cor} />;
 }
 
-/** Carrega dados da API com estado de carregando/erro e função para tentar de novo. */
-export function useCarregar<T>(buscar: () => Promise<T>, deps: unknown[]) {
+/**
+ * Carrega dados da API com estado de carregando/erro e função para tentar de novo.
+ * `chave` identifica o que está sendo carregado (ex.: `categoria-3`); quando ela muda, carrega de novo.
+ */
+export function useCarregar<T>(buscar: () => Promise<T>, chave: string) {
   const [dados, setDados] = useState<T | null>(null);
   const [erro, setErro] = useState<string | null>(null);
   const [carregando, setCarregando] = useState(true);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const executar = useCallback(buscar, deps);
-
-  const recarregar = useCallback(async () => {
-    setCarregando(true);
-    setErro(null);
-    try {
-      setDados(await executar());
-    } catch (e) {
-      setErro(e instanceof Error ? e.message : 'Não foi possível carregar.');
-    } finally {
-      setCarregando(false);
-    }
-  }, [executar]);
+  const [versao, setVersao] = useState(0);
+  const buscarAtual = useRef(buscar);
 
   useEffect(() => {
-    recarregar();
-  }, [recarregar]);
+    buscarAtual.current = buscar;
+  });
+
+  useEffect(() => {
+    let cancelado = false;
+    buscarAtual
+      .current()
+      .then(
+        (d) => {
+          if (cancelado) return;
+          setDados(d);
+          setErro(null);
+        },
+        (e: unknown) => {
+          if (!cancelado) setErro(e instanceof Error ? e.message : 'Não foi possível carregar.');
+        },
+      )
+      .finally(() => {
+        if (!cancelado) setCarregando(false);
+      });
+    return () => {
+      cancelado = true;
+    };
+  }, [chave, versao]);
+
+  const recarregar = useCallback(() => {
+    setCarregando(true);
+    setVersao((v) => v + 1);
+  }, []);
 
   return { dados, setDados, erro, carregando, recarregar };
 }

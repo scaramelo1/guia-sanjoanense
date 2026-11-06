@@ -14,7 +14,7 @@ export default function TelaSalvos() {
       usuario
         ? chamar<{ profissionais: ProfissionalResumo[] }>('favoritos.php').then((r) => r.profissionais)
         : Promise.resolve([]),
-    [usuario?.id],
+    `salvos-${usuario?.id ?? 0}`,
   );
   // volta do perfil (onde pode ter tirado dos salvos): atualiza a lista
   useFocusEffect(
