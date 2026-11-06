@@ -21,13 +21,15 @@ mkdir -p "$DIR"
 NOVO="$DIR/guia-sanjoanense.apk.novo"
 if [[ "$ORIGEM" =~ ^https:// ]]; then
   echo "Baixando o APK..."
-  curl -fL --retry 3 -m 900 -o "$NOVO" "$ORIGEM"
+  curl -fsSL --retry 3 -m 900 -o "$NOVO" "$ORIGEM"
 else
   cp "$ORIGEM" "$NOVO"
 fi
 
 # Confere se é mesmo um APK (arquivo zip com AndroidManifest.xml) antes de trocar
-if [ "$(head -c 2 "$NOVO")" != "PK" ] || ! unzip -l "$NOVO" 2>/dev/null | grep -q AndroidManifest.xml; then
+# (lista guardada numa variável: "unzip | grep -q" falha com pipefail em APK grande, porque o grep para no meio)
+LISTA=$(unzip -Z1 "$NOVO" 2>/dev/null || true)
+if [ "$(head -c 2 "$NOVO")" != "PK" ] || ! grep -qx 'AndroidManifest.xml' <<< "$LISTA"; then
   rm -f "$NOVO"
   echo "Falhou: o arquivo não é um APK. Nada foi trocado."
   exit 1
