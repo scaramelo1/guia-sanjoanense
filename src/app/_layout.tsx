@@ -1,11 +1,13 @@
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 
+import { Abertura } from '../componentes/Abertura';
 import { ProvedorConta } from '../conta';
 import { cores, fonte } from '../tema';
 
 export default function Raiz() {
   return (
+    <Abertura>
     <ProvedorConta>
       <StatusBar style="dark" />
       <Stack
@@ -27,5 +29,6 @@ export default function Raiz() {
         <Stack.Screen name="entrar" options={{ title: 'Entrar', presentation: 'modal' }} />
       </Stack>
     </ProvedorConta>
+    </Abertura>
   );
 }

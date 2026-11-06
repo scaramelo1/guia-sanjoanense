@@ -33,6 +33,7 @@ Legenda: ✅ feito · 🟡 parcial · ⬜ a fazer
 5b. 🟡 Contas no app: usuário relatou que não funcionam; o servidor nunca recebeu tentativa de entrar/criar conta → investigar no emulador
 5c. ✅ Aba Notícias (pedido do cliente, 06/11): abas embaixo (Início, Notícias, Salvos, Conta); manchetes coletadas a cada 30 min da página da Prefeitura e do RSS do g1 Campinas (filtrado por "São João da Boa Vista"); notícia aberta dentro do app (passo 5d)
 5d. ✅ Notícia montada dentro do app (pedido do cliente, 06/11): Prefeitura com texto completo, intertítulos e galeria; g1 só com resumo do RSS; sempre com quadro "Fonte" + link do original. Coleta por cron 6h, 9h, 12h, 15h, 18h, 21h (`/etc/cron.d/guia-sanjoanense`, log em /var/lib/guia-sanjoanense/noticias.log); reserva: a API coleta se passar de 3 h
+5e. ✅ Splash Screen (pedido do cliente, 06/11): splash nativa com o "S" da Sanjoanenses no fundo branco e, em seguida, abertura animada (`src/componentes/Abertura.tsx`): o S sobe, aparecem "Guia Sanjoanense", faixa ciano/magenta e "São João da Boa Vista"; some em ~2,5 s (tocar pula). Trocar pela logo em alta quando chegar (passo 10)
 6. ⬜ Administração web (página Sanjoanenses): aprovar/recusar cadastros, editar, selo, cortesia,
    categorias (ordem e quais vão para a tela inicial), ocultar comentários, apagar exemplos
 7. ⬜ Painel do profissional (web): autocadastro, foto, dados, serviços, responder avaliações,
